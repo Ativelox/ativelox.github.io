@@ -440,6 +440,10 @@ function tick(delta){
 			break;
 			
 		case -2:
+			playerX = width / 2;
+			playerY = height / 2;
+			puddleSize = background.width / 2.6;
+		
 			window.location.reload(true);
 			break;
 			
