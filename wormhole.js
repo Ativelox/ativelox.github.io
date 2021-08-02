@@ -435,13 +435,19 @@ function tick(delta){
 			
 		// fail state
 		case -1:
-			alert("You Failed!");
-			state = 0;
+			alert("You failed.");
+			state = -2;
+			break;
+			
+		case -2:
+			window.location.reload(true);
 			break;
 			
 		default:
-			alert("Done");
+			alert("Done.");
+			state = -2;
 			break;
+
 	}
 }
 
@@ -965,6 +971,10 @@ function rectIntersects(rect1, rect2){
 }
 
 function advanceState(){
+	if(state < 0){
+		return;
+	}
+	
 	if(bruteVx != 0 || bruteVy != 0){
 		return;
 	}
