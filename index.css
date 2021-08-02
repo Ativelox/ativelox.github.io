@@ -1,0 +1,22 @@
+body {
+	background-color: #a1a1a1;
+}
+
+input {
+	background-color: #ba935b;
+	border-style: solid;
+	border-width: thick;
+	color: white;
+	padding: 15px 50px;
+	text-align: center;
+	text-decoration: none;
+	display: block;
+	font-size: 20px;
+	margin-right: 10%;
+	margin-left: 400px;
+	margin-top: 0%;
+}
+
+h2 {
+	margin-left: 200px;
+}
