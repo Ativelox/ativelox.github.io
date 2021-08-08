@@ -10,12 +10,46 @@ input {
 	padding: 15px 50px;
 	text-align: center;
 	text-decoration: none;
-	display: block;
+	display: inline-block;
 	font-size: 20px;
-	margin-right: 10%;
-	margin-left: 400px;
+	margin-left: 20px;
 	margin-top: 0%;
 }
+
+select {
+	background-color: #ba935b;
+	border-style: solid;
+	border-width: thick;
+	color: white;
+	padding: 15px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	margin-left: 20px;
+	margin-top: 0%;
+}
+
+label {
+	color: black;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 25px;
+	margin-left: 20px;
+	margin-top: 0%;
+	font-weight: bold;
+}
+
+p {
+	font-size: 20px;
+}
+
+#strats {
+	margin-top: 10px;
+	margin-left: 55px;
+}
+
 
 h2 {
 	margin-left: 200px;

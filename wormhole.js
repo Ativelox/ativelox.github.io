@@ -123,6 +123,21 @@ var eLowPuddle3Pos = [740, 575];
 
 var stateToIdToPos = {};
 
+var startTime = 0;
+var passedTime = 0;
+var delta = 0;
+
+var timesPuddlesShrank = 0;
+
+var isRealtime = false;
+
+var chakramSnapshot = [[0, 0], [0, 0]];
+var isChakramSnapshot = false;
+
+var isBruteJumpSnapshot = false;
+var isBruteRaySnapshot = false;
+
+var stratId = 0;
 	
 PIXI.loader
   .add("img/bg.png")
@@ -177,8 +192,32 @@ function setup() {
   app.stage.addChild(graphics);
 }
 
-function tick(delta){
+function setPlayerId(id) {
+	if (id < 0 || isRealtime || state > 0) {
+		return;
+    }
+	playerId = id;
+}
+
+function setStrat(id) {
+	if (id < 0 || isRealtime || state > 0) {
+		return;
+	}
+	stratId = id;
+
+	initializePosMapping(bossReversal, puddleReversal);
+
+}
+
+function tick(delta) {
+	this.delta = delta;
+
 	graphics.clear();
+
+	if (isRealtime) {
+		simulate(delta);
+		return;
+    }
 	
 	switch(state){
 		// pre everything
@@ -457,7 +496,7 @@ function tick(delta){
 function initializePosMapping(bossReversed, puddleReversed){
 	// bossReversed -> BJ NE, CC NW
 	// puddleReversed -> NW, SE 
-	
+
 	stateToIdToPos[0] = {};
 	stateToIdToPos[1] = {};
 	stateToIdToPos[2] = {};
@@ -475,256 +514,329 @@ function initializePosMapping(bossReversed, puddleReversed){
 	stateToIdToPos[14] = {};
 	stateToIdToPos[15] = {};
 	stateToIdToPos[16] = {};
-	
-	for(var i = 1; i <= 8; i++){
-		stateToIdToPos[0][i] = [width/2, height/2];
+
+	for (var i = 1; i <= 8; i++) {
+		stateToIdToPos[0][i] = [width / 2, height / 2];
 	}
-	
-	for(var i = 1; i <= 2; i++){	
-		if(bossReversal){
-			stateToIdToPos[i][1] = nwPos;
-			stateToIdToPos[i][2] = sePos;
-			stateToIdToPos[i][3] = nePos;
-			stateToIdToPos[i][4] = swBait;
-			stateToIdToPos[i][5] = wwnPos;
-			stateToIdToPos[i][6] = eenPos;
-			stateToIdToPos[i][7] = wwnPos;
-			stateToIdToPos[i][8] = eenPos;
-			
-		}else{
-			stateToIdToPos[i][1] = nePos;
-			stateToIdToPos[i][2] = swPos;
-			stateToIdToPos[i][3] = nwPos;
-			stateToIdToPos[i][4] = seBait;
-			stateToIdToPos[i][5] = eenPos;
-			stateToIdToPos[i][6] = wwnPos;
-			stateToIdToPos[i][7] = eenPos;
-			stateToIdToPos[i][8] = wwnPos;
+
+	// Onyxia strat
+	if (stratId == 1) {
+
+		stateToIdToPos[1][1] = nwPos;
+		stateToIdToPos[1][2] = nePos;
+		stateToIdToPos[1][5] = wwnPos;
+		stateToIdToPos[1][6] = eenPos;
+		stateToIdToPos[1][7] = wwnPos;
+		stateToIdToPos[1][8] = eenPos;
+
+		if (bossReversal) {
+			stateToIdToPos[1][3] = swBait;
+			stateToIdToPos[1][4] = sePos;
+		} else {
+			stateToIdToPos[1][3] = swPos;
+			stateToIdToPos[1][4] = seBait;
 		}
-	}
-	
-	stateToIdToPos[3][1] = stateToIdToPos[2][1];
-	stateToIdToPos[3][2] = stateToIdToPos[2][2];
-	stateToIdToPos[3][3] = stateToIdToPos[2][3];
-	stateToIdToPos[3][4] = stateToIdToPos[2][4];
-	
-	if(bossReversal){
+
+		stateToIdToPos[3][1] = nwPos;
+		stateToIdToPos[3][2] = nePos;
+		stateToIdToPos[3][3] = stateToIdToPos[1][3];
+		stateToIdToPos[3][4] = stateToIdToPos[1][4];
 		stateToIdToPos[3][5] = wPuddle1Pos;
 		stateToIdToPos[3][6] = ePuddle1Pos;
 		stateToIdToPos[3][7] = wPos;
 		stateToIdToPos[3][8] = ePos;
-	}else{
-		stateToIdToPos[3][5] = ePuddle1Pos;
-		stateToIdToPos[3][6] = wPuddle1Pos;
-		stateToIdToPos[3][7] = ePos;
-		stateToIdToPos[3][8] = wPos;
-	}
-	
-	stateToIdToPos[4][1] = stateToIdToPos[3][1];
-	stateToIdToPos[4][2] = stateToIdToPos[3][2];
-	stateToIdToPos[4][3] = stateToIdToPos[3][3];
-	stateToIdToPos[4][4] = stateToIdToPos[3][4];
-	stateToIdToPos[4][5] = stateToIdToPos[3][5];
-	stateToIdToPos[4][6] = stateToIdToPos[3][6];
-	stateToIdToPos[4][7] = stateToIdToPos[3][7];
-	stateToIdToPos[4][8] = stateToIdToPos[3][8];
-	
-	stateToIdToPos[5][1] = stateToIdToPos[4][1];
-	stateToIdToPos[5][2] = stateToIdToPos[4][2];
-	stateToIdToPos[5][3] = stateToIdToPos[4][3];
-	stateToIdToPos[5][4] = stateToIdToPos[4][4];
-	stateToIdToPos[5][5] = stateToIdToPos[4][5];
-	stateToIdToPos[5][6] = stateToIdToPos[4][6];
-	stateToIdToPos[5][7] = stateToIdToPos[4][7];
-	stateToIdToPos[5][8] = stateToIdToPos[4][8];
-	
-	if(bossReversal){
+
 		stateToIdToPos[6][1] = wPos;
 		stateToIdToPos[6][2] = ePos;
-		stateToIdToPos[6][4] = wSacramentPos;
-		
-	}else{
-		stateToIdToPos[6][1] = ePos;
-		stateToIdToPos[6][2] = wPos;
+		stateToIdToPos[6][3] = wSacramentPos;
 		stateToIdToPos[6][4] = eSacramentPos;
-		
-	}
-	stateToIdToPos[6][3] = stateToIdToPos[5][3];
-	stateToIdToPos[6][5] = stateToIdToPos[5][5];
-	stateToIdToPos[6][6] = stateToIdToPos[5][6];
-	stateToIdToPos[6][7] = stateToIdToPos[5][7];
-	stateToIdToPos[6][8] = stateToIdToPos[5][8];
-	
-	stateToIdToPos[7][1] = stateToIdToPos[6][1];
-	stateToIdToPos[7][2] = stateToIdToPos[6][2];
-	stateToIdToPos[7][3] = stateToIdToPos[6][3];
-	stateToIdToPos[7][4] = stateToIdToPos[6][4];
-	stateToIdToPos[7][5] = stateToIdToPos[6][5];
-	stateToIdToPos[7][6] = stateToIdToPos[6][6];
-	stateToIdToPos[7][7] = stateToIdToPos[6][7];
-	stateToIdToPos[7][8] = stateToIdToPos[6][8];
-	
-	stateToIdToPos[8][1] = stateToIdToPos[7][1];
-	stateToIdToPos[8][2] = stateToIdToPos[7][2];
-	stateToIdToPos[8][3] = stateToIdToPos[7][3];
-	stateToIdToPos[8][4] = stateToIdToPos[7][4];
-	stateToIdToPos[8][5] = stateToIdToPos[7][5];
-	stateToIdToPos[8][6] = stateToIdToPos[7][6];
-	stateToIdToPos[8][7] = stateToIdToPos[7][7];
-	stateToIdToPos[8][8] = stateToIdToPos[7][8];
-	
-	
-	// first puddle soaked, #4 charge done.
-	// 1/2/3/4 stay. 
-	// 5 -> away from puddle, bait cleave
-	// 6 -> away from puddle, bait charge
-	// 7 -> into puddle
-	// 8 -> into puddle
-	// bossReversed -> BJ NE, CC NW
-	// puddleReversed -> NW, SE 
-	
-	stateToIdToPos[9][1] = stateToIdToPos[8][1];
-	stateToIdToPos[9][2] = stateToIdToPos[8][2];
-	stateToIdToPos[9][3] = stateToIdToPos[8][3];
-	stateToIdToPos[9][4] = stateToIdToPos[8][4];
-	
-	if(bossReversal){
-		//BJ: NE, CC: NW
-		
-		if(puddleReversal){
-			// Puddles: NW, SE
-			stateToIdToPos[9][5] = wwsPos;
-			stateToIdToPos[9][6] = eenPos;
+		stateToIdToPos[6][5] = stateToIdToPos[3][5];
+		stateToIdToPos[6][6] = stateToIdToPos[3][6];
+		stateToIdToPos[6][7] = stateToIdToPos[3][7];
+		stateToIdToPos[6][8] = stateToIdToPos[3][8];
+
+		stateToIdToPos[9][1] = wPos;
+		stateToIdToPos[9][2] = ePos;
+		stateToIdToPos[9][3] = wPos;
+		stateToIdToPos[9][4] = ePos;
+		stateToIdToPos[9][5] = nwPos;
+		stateToIdToPos[9][6] = nePos;
+
+		if (puddleReversal) {
 			stateToIdToPos[9][7] = wHighPuddle2Pos;
 			stateToIdToPos[9][8] = eLowPuddle2Pos;
-			
-		}else{
-			// Puddles: NE, SW
-			stateToIdToPos[9][5] = wwnPos;
-			stateToIdToPos[9][6] = eesPos;
+		} else {
 			stateToIdToPos[9][7] = wLowPuddle2Pos;
 			stateToIdToPos[9][8] = eHighPuddle2Pos;
 		}
-	}else{
-		//BJ: NW, CC; NE
-		
-		if(puddleReversal){
-			// Puddles: NW, SE
-			stateToIdToPos[9][5] = eenPos;
-			stateToIdToPos[9][6] = wwsPos;
-			stateToIdToPos[9][7] = eLowPuddle2Pos;
-			stateToIdToPos[9][8] = wHighPuddle2Pos;
-		}else{
-			// Puddles: NE, SW
-			stateToIdToPos[9][5] = eesPos;
-			stateToIdToPos[9][6] = wwnPos;
-			stateToIdToPos[9][7] = eHighPuddle2Pos;
-			stateToIdToPos[9][8] = wLowPuddle2Pos;
-		}
-		
-	}
-	
-	stateToIdToPos[10][1] = stateToIdToPos[9][1];
-	stateToIdToPos[10][2] = stateToIdToPos[9][2];
-	stateToIdToPos[10][3] = stateToIdToPos[9][3];
-	stateToIdToPos[10][4] = stateToIdToPos[9][4];
-	stateToIdToPos[10][5] = stateToIdToPos[9][5];
-	stateToIdToPos[10][6] = stateToIdToPos[9][6];
-	stateToIdToPos[10][7] = stateToIdToPos[9][7];
-	stateToIdToPos[10][8] = stateToIdToPos[9][8];
-	
-	stateToIdToPos[11][1] = stateToIdToPos[10][1];
-	stateToIdToPos[11][2] = stateToIdToPos[10][2];
-	stateToIdToPos[11][3] = stateToIdToPos[10][3];
-	stateToIdToPos[11][4] = stateToIdToPos[10][4];
-	stateToIdToPos[11][5] = stateToIdToPos[10][5];
-	stateToIdToPos[11][6] = stateToIdToPos[10][6];
-	stateToIdToPos[11][7] = stateToIdToPos[10][7];
-	stateToIdToPos[11][8] = stateToIdToPos[10][8];
-	
-	// #7 goes off, third puddle resolves about to happen
-	stateToIdToPos[12][3] = stateToIdToPos[10][3];
-	stateToIdToPos[12][4] = stateToIdToPos[10][4];
-	
-	if(bossReversal){
-		//BJ: NE, CC: NW
-		
-		if(puddleReversal){
-			// Puddles: NW, SE
-			stateToIdToPos[12][5] = wPos;
-			stateToIdToPos[12][6] = ePos;
-			stateToIdToPos[12][7] = wwsPos;
-			stateToIdToPos[12][8] = eenPos;	
+
+		stateToIdToPos[12][3] = wPos;
+		stateToIdToPos[12][4] = ePos;
+		stateToIdToPos[12][5] = wPos;
+		stateToIdToPos[12][6] = ePos;
+		stateToIdToPos[12][7] = nwPos;
+		stateToIdToPos[12][8] = nePos;
+
+		if (puddleReversal) {
 			stateToIdToPos[12][1] = wHighPuddle3Pos;
 			stateToIdToPos[12][2] = eLowPuddle3Pos;
-			
-		}else{
-			// Puddles: NE, SW
-			stateToIdToPos[12][5] = wPos;
-			stateToIdToPos[12][6] = ePos;
-			stateToIdToPos[12][7] = wwnPos;
-			stateToIdToPos[12][8] = eesPos;			
+
+		} else {
 			stateToIdToPos[12][1] = wLowPuddle3Pos;
 			stateToIdToPos[12][2] = eHighPuddle3Pos;
+
+        }
+    }
+
+	// TpS strat
+	if (stratId == 0) {
+
+		for (var i = 1; i <= 2; i++) {
+			if (bossReversal) {
+				stateToIdToPos[i][1] = nwPos;
+				stateToIdToPos[i][2] = sePos;
+				stateToIdToPos[i][3] = nePos;
+				stateToIdToPos[i][4] = swBait;
+				stateToIdToPos[i][5] = wwnPos;
+				stateToIdToPos[i][6] = eenPos;
+				stateToIdToPos[i][7] = wwnPos;
+				stateToIdToPos[i][8] = eenPos;
+
+			} else {
+				stateToIdToPos[i][1] = nePos;
+				stateToIdToPos[i][2] = swPos;
+				stateToIdToPos[i][3] = nwPos;
+				stateToIdToPos[i][4] = seBait;
+				stateToIdToPos[i][5] = eenPos;
+				stateToIdToPos[i][6] = wwnPos;
+				stateToIdToPos[i][7] = eenPos;
+				stateToIdToPos[i][8] = wwnPos;
+			}
 		}
-	}else{
-		//BJ: NW, CC; NE
-		
-		if(puddleReversal){
-			// Puddles: NW, SE
-			stateToIdToPos[12][5] = ePos;
-			stateToIdToPos[12][6] = wPos;
-			stateToIdToPos[12][7] = eenPos;
-			stateToIdToPos[12][8] = wwsPos;
-			stateToIdToPos[12][1] = eLowPuddle3Pos;
-			stateToIdToPos[12][2] = wHighPuddle3Pos;
-		}else{
-			// Puddles: NE, SW
-			stateToIdToPos[12][5] = ePos;
-			stateToIdToPos[12][6] = wPos;
-			stateToIdToPos[12][7] = eesPos;
-			stateToIdToPos[12][8] = wwnPos;
-			stateToIdToPos[12][1] = eHighPuddle3Pos;
-			stateToIdToPos[12][2] = wLowPuddle3Pos;
+
+		stateToIdToPos[3][1] = stateToIdToPos[2][1];
+		stateToIdToPos[3][2] = stateToIdToPos[2][2];
+		stateToIdToPos[3][3] = stateToIdToPos[2][3];
+		stateToIdToPos[3][4] = stateToIdToPos[2][4];
+
+		if (bossReversal) {
+			stateToIdToPos[3][5] = wPuddle1Pos;
+			stateToIdToPos[3][6] = ePuddle1Pos;
+			stateToIdToPos[3][7] = wPos;
+			stateToIdToPos[3][8] = ePos;
+		} else {
+			stateToIdToPos[3][5] = ePuddle1Pos;
+			stateToIdToPos[3][6] = wPuddle1Pos;
+			stateToIdToPos[3][7] = ePos;
+			stateToIdToPos[3][8] = wPos;
 		}
-		
+
+		stateToIdToPos[4][1] = stateToIdToPos[3][1];
+		stateToIdToPos[4][2] = stateToIdToPos[3][2];
+		stateToIdToPos[4][3] = stateToIdToPos[3][3];
+		stateToIdToPos[4][4] = stateToIdToPos[3][4];
+		stateToIdToPos[4][5] = stateToIdToPos[3][5];
+		stateToIdToPos[4][6] = stateToIdToPos[3][6];
+		stateToIdToPos[4][7] = stateToIdToPos[3][7];
+		stateToIdToPos[4][8] = stateToIdToPos[3][8];
+
+		stateToIdToPos[5][1] = stateToIdToPos[4][1];
+		stateToIdToPos[5][2] = stateToIdToPos[4][2];
+		stateToIdToPos[5][3] = stateToIdToPos[4][3];
+		stateToIdToPos[5][4] = stateToIdToPos[4][4];
+		stateToIdToPos[5][5] = stateToIdToPos[4][5];
+		stateToIdToPos[5][6] = stateToIdToPos[4][6];
+		stateToIdToPos[5][7] = stateToIdToPos[4][7];
+		stateToIdToPos[5][8] = stateToIdToPos[4][8];
+
+		if (bossReversal) {
+			stateToIdToPos[6][1] = wPos;
+			stateToIdToPos[6][2] = ePos;
+			stateToIdToPos[6][4] = wSacramentPos;
+
+		} else {
+			stateToIdToPos[6][1] = ePos;
+			stateToIdToPos[6][2] = wPos;
+			stateToIdToPos[6][4] = eSacramentPos;
+
+		}
+		stateToIdToPos[6][3] = stateToIdToPos[5][3];
+		stateToIdToPos[6][5] = stateToIdToPos[5][5];
+		stateToIdToPos[6][6] = stateToIdToPos[5][6];
+		stateToIdToPos[6][7] = stateToIdToPos[5][7];
+		stateToIdToPos[6][8] = stateToIdToPos[5][8];
+
+		stateToIdToPos[7][1] = stateToIdToPos[6][1];
+		stateToIdToPos[7][2] = stateToIdToPos[6][2];
+		stateToIdToPos[7][3] = stateToIdToPos[6][3];
+		stateToIdToPos[7][4] = stateToIdToPos[6][4];
+		stateToIdToPos[7][5] = stateToIdToPos[6][5];
+		stateToIdToPos[7][6] = stateToIdToPos[6][6];
+		stateToIdToPos[7][7] = stateToIdToPos[6][7];
+		stateToIdToPos[7][8] = stateToIdToPos[6][8];
+
+		stateToIdToPos[8][1] = stateToIdToPos[7][1];
+		stateToIdToPos[8][2] = stateToIdToPos[7][2];
+		stateToIdToPos[8][3] = stateToIdToPos[7][3];
+		stateToIdToPos[8][4] = stateToIdToPos[7][4];
+		stateToIdToPos[8][5] = stateToIdToPos[7][5];
+		stateToIdToPos[8][6] = stateToIdToPos[7][6];
+		stateToIdToPos[8][7] = stateToIdToPos[7][7];
+		stateToIdToPos[8][8] = stateToIdToPos[7][8];
+
+
+		// first puddle soaked, #4 charge done.
+		// 1/2/3/4 stay. 
+		// 5 -> away from puddle, bait cleave
+		// 6 -> away from puddle, bait charge
+		// 7 -> into puddle
+		// 8 -> into puddle
+		// bossReversed -> BJ NE, CC NW
+		// puddleReversed -> NW, SE 
+
+		stateToIdToPos[9][1] = stateToIdToPos[8][1];
+		stateToIdToPos[9][2] = stateToIdToPos[8][2];
+		stateToIdToPos[9][3] = stateToIdToPos[8][3];
+		stateToIdToPos[9][4] = stateToIdToPos[8][4];
+
+		if (bossReversal) {
+			//BJ: NE, CC: NW
+
+			if (puddleReversal) {
+				// Puddles: NW, SE
+				stateToIdToPos[9][5] = wwsPos;
+				stateToIdToPos[9][6] = eenPos;
+				stateToIdToPos[9][7] = wHighPuddle2Pos;
+				stateToIdToPos[9][8] = eLowPuddle2Pos;
+
+			} else {
+				// Puddles: NE, SW
+				stateToIdToPos[9][5] = wwnPos;
+				stateToIdToPos[9][6] = eesPos;
+				stateToIdToPos[9][7] = wLowPuddle2Pos;
+				stateToIdToPos[9][8] = eHighPuddle2Pos;
+			}
+		} else {
+			//BJ: NW, CC; NE
+
+			if (puddleReversal) {
+				// Puddles: NW, SE
+				stateToIdToPos[9][5] = eenPos;
+				stateToIdToPos[9][6] = wwsPos;
+				stateToIdToPos[9][7] = eLowPuddle2Pos;
+				stateToIdToPos[9][8] = wHighPuddle2Pos;
+			} else {
+				// Puddles: NE, SW
+				stateToIdToPos[9][5] = eesPos;
+				stateToIdToPos[9][6] = wwnPos;
+				stateToIdToPos[9][7] = eHighPuddle2Pos;
+				stateToIdToPos[9][8] = wLowPuddle2Pos;
+			}
+
+		}
+
+		stateToIdToPos[10][1] = stateToIdToPos[9][1];
+		stateToIdToPos[10][2] = stateToIdToPos[9][2];
+		stateToIdToPos[10][3] = stateToIdToPos[9][3];
+		stateToIdToPos[10][4] = stateToIdToPos[9][4];
+		stateToIdToPos[10][5] = stateToIdToPos[9][5];
+		stateToIdToPos[10][6] = stateToIdToPos[9][6];
+		stateToIdToPos[10][7] = stateToIdToPos[9][7];
+		stateToIdToPos[10][8] = stateToIdToPos[9][8];
+
+		stateToIdToPos[11][1] = stateToIdToPos[10][1];
+		stateToIdToPos[11][2] = stateToIdToPos[10][2];
+		stateToIdToPos[11][3] = stateToIdToPos[10][3];
+		stateToIdToPos[11][4] = stateToIdToPos[10][4];
+		stateToIdToPos[11][5] = stateToIdToPos[10][5];
+		stateToIdToPos[11][6] = stateToIdToPos[10][6];
+		stateToIdToPos[11][7] = stateToIdToPos[10][7];
+		stateToIdToPos[11][8] = stateToIdToPos[10][8];
+
+		// #7 goes off, third puddle resolves about to happen
+		stateToIdToPos[12][3] = stateToIdToPos[10][3];
+		stateToIdToPos[12][4] = stateToIdToPos[10][4];
+
+		if (bossReversal) {
+			//BJ: NE, CC: NW
+
+			if (puddleReversal) {
+				// Puddles: NW, SE
+				stateToIdToPos[12][5] = wPos;
+				stateToIdToPos[12][6] = ePos;
+				stateToIdToPos[12][7] = wwsPos;
+				stateToIdToPos[12][8] = eenPos;
+				stateToIdToPos[12][1] = wHighPuddle3Pos;
+				stateToIdToPos[12][2] = eLowPuddle3Pos;
+
+			} else {
+				// Puddles: NE, SW
+				stateToIdToPos[12][5] = wPos;
+				stateToIdToPos[12][6] = ePos;
+				stateToIdToPos[12][7] = wwnPos;
+				stateToIdToPos[12][8] = eesPos;
+				stateToIdToPos[12][1] = wLowPuddle3Pos;
+				stateToIdToPos[12][2] = eHighPuddle3Pos;
+			}
+		} else {
+			//BJ: NW, CC; NE
+
+			if (puddleReversal) {
+				// Puddles: NW, SE
+				stateToIdToPos[12][5] = ePos;
+				stateToIdToPos[12][6] = wPos;
+				stateToIdToPos[12][7] = eenPos;
+				stateToIdToPos[12][8] = wwsPos;
+				stateToIdToPos[12][1] = eLowPuddle3Pos;
+				stateToIdToPos[12][2] = wHighPuddle3Pos;
+			} else {
+				// Puddles: NE, SW
+				stateToIdToPos[12][5] = ePos;
+				stateToIdToPos[12][6] = wPos;
+				stateToIdToPos[12][7] = eesPos;
+				stateToIdToPos[12][8] = wwnPos;
+				stateToIdToPos[12][1] = eHighPuddle3Pos;
+				stateToIdToPos[12][2] = wLowPuddle3Pos;
+			}
+
+		}
+
+		stateToIdToPos[13][1] = stateToIdToPos[12][1];
+		stateToIdToPos[13][2] = stateToIdToPos[12][2];
+		stateToIdToPos[13][3] = stateToIdToPos[12][3];
+		stateToIdToPos[13][4] = stateToIdToPos[12][4];
+		stateToIdToPos[13][5] = stateToIdToPos[12][5];
+		stateToIdToPos[13][6] = stateToIdToPos[12][6];
+		stateToIdToPos[13][7] = stateToIdToPos[12][7];
+		stateToIdToPos[13][8] = stateToIdToPos[12][8];
+
+		stateToIdToPos[14][1] = stateToIdToPos[13][1];
+		stateToIdToPos[14][2] = stateToIdToPos[13][2];
+		stateToIdToPos[14][3] = stateToIdToPos[13][3];
+		stateToIdToPos[14][4] = stateToIdToPos[13][4];
+		stateToIdToPos[14][5] = stateToIdToPos[13][5];
+		stateToIdToPos[14][6] = stateToIdToPos[13][6];
+		stateToIdToPos[14][7] = stateToIdToPos[13][7];
+		stateToIdToPos[14][8] = stateToIdToPos[13][8];
+
+		stateToIdToPos[15][1] = [width / 2, height / 2];
+		stateToIdToPos[15][2] = [width / 2, height / 2];
+		stateToIdToPos[15][3] = [width / 2, height / 2];
+		stateToIdToPos[15][4] = [width / 2, height / 2];
+		stateToIdToPos[15][5] = [width / 2, height / 2];
+		stateToIdToPos[15][6] = [width / 2, height / 2];
+		stateToIdToPos[15][7] = [width / 2, height / 2];
+		stateToIdToPos[15][8] = [width / 2, height / 2];
+
+		stateToIdToPos[16][1] = stateToIdToPos[15][1];
+		stateToIdToPos[16][2] = stateToIdToPos[15][2];
+		stateToIdToPos[16][3] = stateToIdToPos[15][3];
+		stateToIdToPos[16][4] = stateToIdToPos[15][4];
+		stateToIdToPos[16][5] = stateToIdToPos[15][5];
+		stateToIdToPos[16][6] = stateToIdToPos[15][6];
+		stateToIdToPos[16][7] = stateToIdToPos[15][7];
+		stateToIdToPos[16][8] = stateToIdToPos[15][8];
 	}
-	
-	stateToIdToPos[13][1] = stateToIdToPos[12][1];
-	stateToIdToPos[13][2] = stateToIdToPos[12][2];
-	stateToIdToPos[13][3] = stateToIdToPos[12][3];
-	stateToIdToPos[13][4] = stateToIdToPos[12][4];
-	stateToIdToPos[13][5] = stateToIdToPos[12][5];
-	stateToIdToPos[13][6] = stateToIdToPos[12][6];
-	stateToIdToPos[13][7] = stateToIdToPos[12][7];
-	stateToIdToPos[13][8] = stateToIdToPos[12][8];
-	
-	stateToIdToPos[14][1] = stateToIdToPos[13][1];
-	stateToIdToPos[14][2] = stateToIdToPos[13][2];
-	stateToIdToPos[14][3] = stateToIdToPos[13][3];
-	stateToIdToPos[14][4] = stateToIdToPos[13][4];
-	stateToIdToPos[14][5] = stateToIdToPos[13][5];
-	stateToIdToPos[14][6] = stateToIdToPos[13][6];
-	stateToIdToPos[14][7] = stateToIdToPos[13][7];
-	stateToIdToPos[14][8] = stateToIdToPos[13][8];
-	
-	stateToIdToPos[15][1] = [width/2, height/2];
-	stateToIdToPos[15][2] = [width/2, height/2];
-	stateToIdToPos[15][3] = [width/2, height/2];
-	stateToIdToPos[15][4] = [width/2, height/2];
-	stateToIdToPos[15][5] = [width/2, height/2];
-	stateToIdToPos[15][6] = [width/2, height/2];
-	stateToIdToPos[15][7] = [width/2, height/2];
-	stateToIdToPos[15][8] = [width/2, height/2];
-	
-	stateToIdToPos[16][1] = stateToIdToPos[15][1];
-	stateToIdToPos[16][2] = stateToIdToPos[15][2];
-	stateToIdToPos[16][3] = stateToIdToPos[15][3];
-	stateToIdToPos[16][4] = stateToIdToPos[15][4];
-	stateToIdToPos[16][5] = stateToIdToPos[15][5];
-	stateToIdToPos[16][6] = stateToIdToPos[15][6];
-	stateToIdToPos[16][7] = stateToIdToPos[15][7];
-	stateToIdToPos[16][8] = stateToIdToPos[15][8];
 }
 
 function render(shape){
@@ -815,8 +927,8 @@ function isHit(shapes, excludedPlayers){
 		var x, y;
 		
 		if(i == playerId){
-			x = playerX + hitboxSize / 2;
-			y = playerY + hitboxSize / 2;
+			x = playerX;
+			y = playerY;
 			
 		}else{
 			x = stateToIdToPos[state][i][0];
@@ -862,6 +974,43 @@ function renderCruiseCleave(id){
 	
 	return renderCleave(width/2, height/2, x, y, 400, 700);
 	
+}
+
+function renderLineAOE(from, to, length, width_c, passing) {
+	var src_x = from[0];
+	var src_y = from[1];
+	var dest_x = to[0];
+	var dest_y = to[1];
+
+	if (passing) {
+		dest_x += dest_x - src_x;
+		dest_y += dest_y - src_y;
+    }
+
+	var center = [width / 2, height / 2];
+
+	var alpha = Math.atan2(height - src_y - center[1], src_x - center[0]);
+
+	var projectedSrcPos1 = [src_x + width_c * Math.cos(Math.PI / 2 - alpha), src_y + width_c * Math.sin(Math.PI / 2 - alpha)];
+	var projectedSrcPos2 = [src_x + width_c * Math.cos(Math.PI / 2 + alpha), src_y + width_c * -Math.sin(Math.PI / 2 + alpha)];
+
+	var projectedDestPos1 = [dest_x + width_c * Math.cos(Math.PI / 2 - alpha), dest_y + width_c * Math.sin(Math.PI / 2 - alpha)];
+	var projectedDestPos2 = [dest_x + width_c * Math.cos(Math.PI / 2 + alpha), dest_y + width_c * -Math.sin(Math.PI / 2 + alpha)];
+
+	var polygon = new PIXI.Polygon([
+		projectedSrcPos1[0], projectedSrcPos1[1],
+		projectedDestPos1[0], projectedDestPos1[1],
+		projectedDestPos2[0], projectedDestPos2[1],
+		projectedSrcPos2[0], projectedSrcPos2[1],
+		projectedSrcPos1[0], projectedSrcPos1[1]]);
+
+	graphics.lineStyle(5, 0xcc6600);
+	graphics.beginFill(0xff8c1a);
+	graphics.drawShape(polygon);
+
+	graphics.endFill();
+
+	return [polygon];
 }
 
 function renderCruiseCharge(src_id, dest_id){
@@ -929,8 +1078,8 @@ function renderBruteRay(){
 	
 	var projectedPos = [center[0] + 600 * Math.cos(alpha), center[1] + 600 * -Math.sin(alpha)];
 	
-	var projectedPosP1 = [projectedPos[0] + 200 * Math.cos(Math.PI/2 - alpha), projectedPos[1] + 200 * Math.sin(Math.PI/2 - alpha)];
-	var projectedPosP2 = [projectedPos[0] + 200 * Math.cos(Math.PI/2 + alpha), projectedPos[1] + 200 * -Math.sin(Math.PI/2 + alpha)];
+	var projectedPosP1 = [projectedPos[0] + 150 * Math.cos(Math.PI / 2 - alpha), projectedPos[1] + 150 * Math.sin(Math.PI/2 - alpha)];
+	var projectedPosP2 = [projectedPos[0] + 150 * Math.cos(Math.PI / 2 + alpha), projectedPos[1] + 150 * -Math.sin(Math.PI/2 + alpha)];
 	
 	var polygon = new PIXI.Polygon([center[0], center[1], projectedPosP1[0], projectedPosP1[1], projectedPosP2[0],projectedPosP2[1], center[0], center[1]]);
 	
@@ -1005,6 +1154,249 @@ function advanceState(){
 		
 		state = -1;
 	}
+}
+
+function goIntoFailStateIf(expr) {
+	if (expr) {
+		isRealtime = false;
+		state = - 1;
+		return true;
+	}
+	return false;
+}
+
+function start() {
+	state = -3;
+
+	isRealtime = true;
+}
+
+function simulate(delta) {
+	passedTime += PIXI.ticker.shared.elapsedMS;
+
+	renderOutline();
+
+	playerX += playerVx;
+	playerY += playerVy;
+
+	if (passedTime < 5650) {
+		state = 0;
+
+		bj.visible = true;
+		cc.visible = true;
+		alex.visible = true;
+
+		initializeBossLocations(bossReversal);
+
+		renderPlayer(playerId, playerX, playerY, rad, false);
+		renderNPCs(false);
+	}
+
+	// render chakrams 
+	if (passedTime >= 5800 && passedTime < 13216) {
+		renderChakrams(bossReversal);
+
+		// snapshot chakrams to 2 random players respectively.
+		if (!isChakramSnapshot) {
+			isChakramSnapshot = true;
+
+			var player1Id = Math.floor(Math.random() * 8) + 1;
+			var player2Id = Math.floor(Math.random() * 8) + 1;
+
+			if (player1Id == playerId) {
+				chakramSnapshot[0] = [playerX, playerY];
+			} else {
+				chakramSnapshot[0] = stateToIdToPos[state][player1Id];
+			}
+
+			if (player2Id = playerId) {
+				chakramSnapshot[1] = [playerX, playerY];
+			} else {
+				chakramSnapshot[1] = stateToIdToPos[state][player2Id];
+			}
+			state = 1;
+	}
+
+	}
+
+	if (passedTime >= 9900 && timesPuddlesShrank < 3) {
+		renderPuddles(puddleReversal);
+    }
+
+	// render chakram AOE for .5 seconds
+	if (passedTime >= 13216 && passedTime < 13216 + 500) {
+
+		cc.visible = false;
+
+		var shapes2;
+		var shapes1 = renderLineAOE([nChakramX, nChakramY], chakramSnapshot[0], 0, 30, true);
+
+		if (bossReversal) {
+			shapes2 = renderLineAOE([eChakramX, eChakramY], chakramSnapshot[1], 0, 30, true);
+		} else {
+
+			shapes2 = renderLineAOE([wChakramX, wChakramY], chakramSnapshot[1], 0, 30, true);
+		}
+
+		if (goIntoFailStateIf(isHit(shapes1, []) || isHit(shapes2, []))) {
+			return;
+        }
+
+	}
+
+	if (passedTime >= 13216 + 500 && passedTime < 14350) {
+		state = 3;
+    }
+
+	if (passedTime >= 14350 && passedTime <= 15866) {
+		if (!isBruteJumpSnapshot) {
+			setPlayerIdFurthestFromBrute(state);
+			isBruteJumpSnapshot = true;
+		}
+		bruteJump(bossReversal);
+	}
+
+	if (passedTime >= 15866) {
+		if (!isBruteRaySnapshot) {
+			setPlayerIdFurthestFromBrute(state);
+			isBruteRaySnapshot = true;
+		}
+	}
+
+	if (passedTime >= 14850 && passedTime < 14850 + 500) {
+		var shapes = renderCruiseCleave(1);
+
+		if (goIntoFailStateIf(isHit(shapes, [1]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 16366 && passedTime < 16366 + 500) {
+		var shapes = renderCruiseCharge(1, 2);
+
+		if (goIntoFailStateIf(isHit(shapes, [1, 2]))) {
+			return;
+        }
+	}
+
+	if (passedTime > 16366 + 500 && passedTime < 18666) {
+		state = 6;
+    }
+
+	if (passedTime >= 18666 && passedTime <= 23926) {
+		var shapes = renderBruteRay();
+
+		if (goIntoFailStateIf(isHit(shapes, []))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 19533 && passedTime < 19533 + 500) {
+		var shapes = renderCruiseCleave(3);
+
+		if (goIntoFailStateIf(isHit(shapes, [3]))){
+			return;
+        }
+	}
+
+	if (passedTime >= 19900 && timesPuddlesShrank == 0) {
+		// first puddle soak. must be soaked by 5/6
+
+		var westSoaked = isHit([puddleHitboxWest], [1, 2, 3, 4, 7, 8]);
+		var eastSoaked = isHit([puddleHitboxEast], [1, 2, 3, 4, 7, 8]);
+
+		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+			return;
+        }
+
+		puddleSize /= 2;
+		timesPuddlesShrank++;
+    }
+
+	if (passedTime >= 21033 && passedTime < 21033 + 500) {
+		var shapes = renderCruiseCharge(3, 4);
+
+		if (goIntoFailStateIf(isHit(shapes, [3, 4]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 21033 + 500 && passedTime < 21926) {
+		state = 9;
+	}
+
+	if (passedTime >= 21926 && passedTime < 21926 + 1000) {
+		var shapes = renderSacrament();
+
+		if (goIntoFailStateIf(isHit(shapes, []))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 23800 && passedTime < 23800 + 500) {
+		var shapes = renderCruiseCleave(5);
+
+		if (goIntoFailStateIf(isHit(shapes, [5]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 24066 && timesPuddlesShrank == 1) {
+		var westSoaked = isHit([puddleHitboxWest], [1, 2, 3, 4, 5, 6]);
+		var eastSoaked = isHit([puddleHitboxEast], [1, 2, 3, 4, 5, 6]);
+
+		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+			return;
+		}
+
+		puddleSize /= 2;
+		timesPuddlesShrank++;
+    }
+
+	if (passedTime >= 25200 && passedTime < 25200 + 500) {
+		var shapes = renderCruiseCharge(5, 6);
+
+		if (goIntoFailStateIf(isHit(shapes, [5, 6]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 25200 + 500 && passedTime < 28000) {
+		state = 12;
+	}
+
+	if (passedTime >= 28000 && passedTime < 28000 + 500) {
+		var shapes = renderCruiseCleave(7);
+
+		if (goIntoFailStateIf(isHit(shapes, [7]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 28366 && timesPuddlesShrank == 2) {
+		var westSoaked = isHit([puddleHitboxWest], [3, 4, 5, 6, 7, 8]);
+		var eastSoaked = isHit([puddleHitboxEast], [3, 4, 5, 6, 7, 8]);
+
+		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+			return;
+		}
+		timesPuddlesShrank++;
+    }
+
+	if (passedTime >= 29566 && passedTime < 29566 + 500) {
+		var shapes = renderCruiseCharge(7, 8);
+
+		if (goIntoFailStateIf(isHit(shapes, [7, 8]))) {
+			return;
+        }
+	}
+
+	if (passedTime >= 5650) {
+		renderPlayer(playerId, playerX, playerY, rad, true);
+		renderNPCs(true);
+	}
+
+	validatePosition();
 }
 
 function renderChakramAOE(){
@@ -1093,10 +1485,10 @@ function initializeBossLocations(isReversed){
 }
 
 function initializeKeyBindings(){
-	let left = keyboard("ArrowLeft"),
-		up = keyboard("ArrowUp"),
-		right = keyboard("ArrowRight"),
-		down = keyboard("ArrowDown");
+	let left = keyboard("a"),
+		up = keyboard("w"),
+		right = keyboard("d"),
+		down = keyboard("s");
 
 	  left.press = () => {
 			playerVx = -speed;
@@ -1205,21 +1597,23 @@ function circleContainsPoint(x, y, center_x, center_y, rad){
 	
 }
 
-function renderNPCs(){
-	for(var i = 1; i <= 8; i++){
-		if(i == playerId){
+function renderNPCs(includeNumber){
+	for (var i = 1; i <= 8; i++) {
+		if (i == playerId) {
 			continue;
 		}
-		
+
 		var npcHitbox = new PIXI.Circle(stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], hitboxSize / 2);
-		
+
 		graphics.lineStyle(5, 0xFFFFFF);
 		graphics.beginFill(0xfc9803);
 		graphics.drawShape(npcHitbox);
-		
+
 		graphics.endFill();
-		
-		renderLimitCutNumberById(i, stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], rad);
+
+		if (includeNumber) { 
+			renderLimitCutNumberById(i, stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], rad);
+		}
 		
 	}
 }
@@ -1227,7 +1621,7 @@ function renderNPCs(){
 // renders the player at the given coordinates with the given
 // radius. the player simply being a collection of dots signifying
 // their limit cut number.
-function renderPlayer(id, x, y, rad){
+function renderPlayer(id, x, y, rad, includeNumber){
 			
 	hitbox = new PIXI.Rectangle(x - hitboxSize / 2, y - hitboxSize / 2, hitboxSize, hitboxSize)
 			
@@ -1237,7 +1631,9 @@ function renderPlayer(id, x, y, rad){
 	
 	graphics.endFill();
 
-	renderLimitCutNumberById(id, x, y, rad);
+	if (includeNumber) {
+		renderLimitCutNumberById(id, x, y, rad);
+	}
 }
 
 function renderLimitCutNumberById(id, x, y, rad){

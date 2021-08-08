@@ -1,16 +1,34 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="index.css">
-  <title>Wormhole Simulator</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="index.css">
+	<title>Wormhole Simulator</title>
+	<script src="pixi.js"></script>
 </head>
-  <script src="pixi.js"></script>
 <body>
 	<h2>Wormhole Simulator created by Zerina Kuga @ Exodus</h2>
-
-	<script src="wormhole.js"></script>
-	<input	 type="button" name="advance" value="Advance" onClick="advanceState();">
-	
+	<script src="wormhole.js"></script><br />
+	<label for="numbers">Choose a number:</label>
+	<select id="numbers" onchange="setPlayerId(this.selectedIndex);">
+		<option value="random">Random</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+	</select>
+	<input type="button" name="start" value="Start" onclick="start();">
+	<br />
+	<label for="strats">Choose a strat:</label>
+	<select id="strats" onchange="setStrat(this.selectedIndex);">
+		<option value="tps">TpS</option>
+		<option value="onyxia">Onyxia</option>
+	</select>
+	<p>Move character with WASD, facing is disregarded (always facing outside), knockbacks are also disregarded.</p>
+	<p>Make sure to refresh the page whenever something stops working or you want to restart. Enjoy!</p>
 </body>
 </html>
