@@ -411,6 +411,730 @@ var tpsStratHints = [
 	}
 ];
 
+var onyxiaStratHints = [
+	{
+		"id": 1,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go NW on red dot."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 2,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go NE on red dot."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 3,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go SW."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15866,
+				"description": "Get to Sacrament safespot."
+			},
+
+			{
+				"time": 21533,
+				"description": "Move to closest cardinal"
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 4,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go SE.\nGet ready to bait Super Jump."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15866,
+				"description": "Move behind Brute Justice and\nget to Sacrament safespot."
+			},
+
+			{
+				"time": 21533,
+				"description": "Move to closest cardinal"
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 5,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go W (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget on the red dot N side."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 6,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go E (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget on the red dot N side."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 7,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go W (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget on the red dot S side."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 8,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go E (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget on the red dot S side."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	}
+];
+
+var onyxiaStratReversedHints = [
+	{
+		"id": 1,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go NW on red dot."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 2,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go NE on red dot."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 3,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go SW.\nGet ready to bait Super Jump."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15866,
+				"description": "Move behind Brute Justice and\nget to Sacrament safespot."
+			},
+
+			{
+				"time": 21533,
+				"description": "Move to closest cardinal"
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 4,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go SE."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15866,
+				"description": "Get to Sacrament safespot."
+			},
+
+			{
+				"time": 21533,
+				"description": "Move to closest cardinal"
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 5,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go W (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget on the red dot N side."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 6,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go E (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget on the red dot N side."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 7,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go W (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget on the red dot S side."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 8,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go E (between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget on the red dot S side."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	}
+];
+
 var currentBossCasts = new Map();
 
 var castBarWidth = 300;
@@ -1695,7 +2419,13 @@ function simulate(delta) {
 	playerX += playerVx;
 	playerY += playerVy;
 
-	renderHint(tpsStratHints[playerId - 1]);
+	if (stratId == 0) {
+		renderHint(tpsStratHints[playerId - 1]);
+	} else if (stratId == 1 && !bossReversal) {
+		renderHint(onyxiaStratHints[playerId - 1]);
+	} else if (stratId == 1 && bossReversal) {
+		renderHint(onyxiaStratReversedHints[playerId - 1]);
+    }
 
 	for (var i = 0; i <= 7; i++) {
 		if (passedTime >= bossCastData[i].start && passedTime <= bossCastData[i].end) {
