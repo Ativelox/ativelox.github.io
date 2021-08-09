@@ -1,7 +1,429 @@
+var bossCastData = [
+	{
+		"id": 0,
+		"name": "Limit Cut",
+		"source": "Cruise Chaser",
+		"start": 0,
+		"end": 1366
+	},
+
+	{
+		"id": 1,
+		"name": "Link-up",
+		"source": "Brute Justice",
+		"start": 1788,
+		"end": 4317
+	},
+
+	{
+		"id": 2,
+		"name": "Void of Repentance",
+		"source": "Alexander Prime",
+		"start": 4700,
+		"end": 7383
+	},
+
+	{
+		"id": 3,
+		"name": "Eye of the Chakram",
+		"source": "Steam Chakram",
+		"start": 7650,
+		"end": 13216
+	},
+
+	{
+		"id": 4,
+		"name": "Super Jump",
+		"source": "Brute Justice",
+		"start": 10733,
+		"end": 14350
+	},
+
+	{
+		"id": 5,
+		"name": "Sacrament",
+		"source": "Alexander Prime",
+		"start": 15850,
+		"end": 21926
+	},
+
+	{
+		"id": 6,
+		"name": "Missile Command",
+		"source": "Brute Justice",
+		"start": 27900,
+		"end": 30633
+	},
+
+	{
+		"id": 7,
+		"name": "Incinerating Heat",
+		"source": "Alexander Prime",
+		"start": 29033,
+		"end": 34033
+	}
+];
+
+var tpsStratHints = [
+	{
+		"id": 1,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Cruise Chaser."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 2,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go opposite to Cruise Chaser."
+			},
+
+			{
+				"time": 11500,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15350,
+				"description": "Move to your closest cardinal to\nget ready for 3rd puddle soak."
+			},
+
+			{
+				"time": 24066,
+				"description": "Soak 3rd puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 3,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Brute Justice."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 4,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go opposite to Brute Justice\n(get ready to bait Super Jump)."
+			},
+
+			{
+				"time": 14350,
+				"description": "Knockback Prevention."
+			},
+
+			{
+				"time": 15866,
+				"description": "Move behind Brute Justice and\nget to Sacrament safespot."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 5,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Cruise Chaser's side\n(between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget between the red dots\naway from your puddle."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 6,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Brute Justice's side\n(between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\nand stand in the puddle."
+			},
+
+			{
+				"time": 19900,
+				"description": "Pop knockback prevention and\nget between the red dots away\nfrom your puddle."
+			},
+
+			{
+				"time": 24300,
+				"description": "Move back to closest cardinal."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 7,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Cruise Chaser's side\n(between red dots),\navoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget between the red dots\naway from your puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	},
+
+	{
+		"id": 8,
+		"hintData": [
+			{
+				"time": 0,
+				"description": "Loose spread center, bait chakrams."
+			},
+
+			{
+				"time": 5800,
+				"description": "Go to Brute Justice's side\n(between red dots),\n avoid chakrams."
+			},
+
+			{
+				"time": 13716,
+				"description": "Move to your closest cardinal\n(avoid puddle)."
+			},
+
+			{
+				"time": 19900,
+				"description": "Move into the puddle."
+			},
+
+			{
+				"time": 24066,
+				"description": "Pop knockback prevention and\nget between the red dots\naway from your puddle."
+			},
+
+			{
+				"time": 29566,
+				"description": "Pop sprint, run center."
+			},
+
+			{
+				"time": 34033,
+				"description": "Do enumerations."
+			},
+
+			{
+				"time": 39666,
+				"description": "Done."
+			}
+		]
+	}
+];
+
+var currentBossCasts = new Map();
+
+var castBarWidth = 300;
+var castBarHeight = 30;
+
+var toRemove = [];
+
+var hintEnabled = false;
+
 var width = 700;
 var height = 700;
 
-let app = new PIXI.Application({width: width, height: height});
+let app = new PIXI.Application({width: width + 400, height: height});
 app.renderer.backgroundColor = 0xFFFFFF;
 
 var graphics = new PIXI.Graphics();
@@ -138,6 +560,8 @@ var isBruteJumpSnapshot = false;
 var isBruteRaySnapshot = false;
 
 var stratId = 0;
+
+var bossCastData;
 	
 PIXI.loader
   .add("img/bg.png")
@@ -199,6 +623,50 @@ function setup() {
   app.stage.addChild(graphics);
 }
 
+function reset() {
+	playerX = width / 2;
+	playerY = height / 2;
+
+	playerVx = 0;
+	playerVy = 0;
+
+	bruteVx = 0;
+	bruteVy = 0;
+
+	cruiseVx = 0;
+	cruiseVy = 0;
+
+	bruteBaitPlayerPos = [0, 0];
+
+	state = 0;
+
+	startTime = 0;
+	passedTime = 0;
+	delta = 0;
+
+	timesPuddlesShrank = 0;
+
+	isRealtime = false;
+
+	chakramSnapshot = [[0, 0], [0, 0]];
+	isChakramSnapshot = false;
+
+	isBruteJumpSnapshot = false;
+	isBruteRaySnapshot = false;
+
+	puddleSize = background.width / 2.6;
+	chakramSize = background.width / 10;
+
+	cc.visible = false;
+	bj.visible = false;
+	alex.visible = false;
+
+	playerId = Math.floor(Math.random() * 8) + 1;
+	bossReversal = Math.floor(Math.random() * 2);
+	puddleReversal = Math.floor(Math.random() * 2);
+
+}
+
 function parseStratToId(query) {
 	switch (query) {
 		case 'onyxia':
@@ -235,6 +703,12 @@ function tick(delta) {
 	this.delta = delta;
 
 	graphics.clear();
+
+	for (const child of toRemove) {
+		app.stage.removeChild(child);
+	}
+
+	toRemove = [];
 
 	if (isRealtime) {
 		simulate(delta);
@@ -501,10 +975,7 @@ function tick(delta) {
 			break;
 			
 		case -2:
-			playerX = width / 2;
-			playerY = height / 2;
-			puddleSize = background.width / 2.6;
-			state = 0;
+			reset();
 			break;
 			
 		default:
@@ -1208,8 +1679,11 @@ function goIntoFailStateIf(expr) {
 }
 
 function start() {
-	state = -3;
+	if (state > 0) {
+		reset();
+	}
 
+	state = -3;
 	isRealtime = true;
 }
 
@@ -1220,6 +1694,17 @@ function simulate(delta) {
 
 	playerX += playerVx;
 	playerY += playerVy;
+
+	renderHint(tpsStratHints[playerId - 1]);
+
+	for (var i = 0; i <= 7; i++) {
+		if (passedTime >= bossCastData[i].start && passedTime <= bossCastData[i].end) {
+			renderCastBar(bossCastData[i]);
+
+		} else {
+			currentBossCasts[i] = false;
+		}
+	}
 
 	if (passedTime < 5650) {
 		state = 0;
@@ -1474,6 +1959,85 @@ function renderChakramAOE(){
 	
 }
 
+function removeChildNextCycle(child) {
+	toRemove.push(child);
+
+}
+
+function renderCastBar(castData) {
+	//console.log("RENDERING: " + castData.name);
+
+	currentBossCasts[castData.id] = true;
+
+	var offset = 0;
+
+	for (const [key, value] of Object.entries(currentBossCasts)) {
+
+		if (key == castData.id) {
+			break;
+		}
+		if (value) {
+			offset++;
+        }
+    }
+
+	var elapsedSinceStart = passedTime - castData.start;
+
+	var scaling = elapsedSinceStart / (castData.end - castData.start);
+
+	var castBarOutline = new PIXI.Rectangle(width + 50, 50 + offset * (32 + castBarHeight), castBarWidth, castBarHeight);
+	var castBarProgressFill = new PIXI.Rectangle(width + 50, 50 + offset * (32 + castBarHeight), scaling * castBarWidth, castBarHeight);
+	var text = new PIXI.Text(castData.name, { fontSize: 20, fill: 0x00000 });
+	text.x = width + 50;
+	text.y = 28 + offset * (32 + castBarHeight);
+
+	app.stage.addChild(text);
+	removeChildNextCycle(text);
+
+	graphics.lineStyle(2, 0x00000);
+	graphics.drawShape(castBarOutline);
+	graphics.beginFill(0xcc8800);
+	graphics.drawShape(castBarProgressFill);
+	graphics.endFill();
+
+}
+
+function renderHint(data) {
+
+	if (!hintEnabled) {
+		return;
+    }
+
+	var descr = "";
+	var nextDescr = "";
+
+	for (var i = 0; i < data.hintData.length; i++) {
+		if (i + 1 >= data.hintData.length) {
+			break;
+        }
+
+		if (passedTime >= data.hintData[i].time && passedTime <= data.hintData[i + 1].time) {
+			descr = data.hintData[i].description;
+			nextDescr = data.hintData[i + 1].description;
+			break;
+        }
+    }
+
+	var text = new PIXI.Text("Current Step:\n" + descr, { fontSize: 20, fill: 0x00000 });
+	text.x = width + 50;
+	text.y = height / 2 + 50;
+
+	var text2 = new PIXI.Text("Next Step:\n" + nextDescr, { fontSize: 20, fill: 0xa1a1a1 });
+	text2.x = width + 50;
+	text2.y = height / 2 + 200;
+
+	app.stage.addChild(text);
+	app.stage.addChild(text2);
+	removeChildNextCycle(text);
+	removeChildNextCycle(text2);
+
+}
+
 function renderOutline(){
 	graphics.lineStyle(20, 0x00000);
 	
@@ -1482,6 +2046,9 @@ function renderOutline(){
 	graphics.lineTo(width, height);
 	graphics.lineTo(0, height);
 	graphics.lineTo(0, 0);
+	graphics.lineTo(width + 400, 0);
+	graphics.lineTo(width + 400, height);
+	graphics.lineTo(0, height);
 	
 }
 
@@ -1770,4 +2337,8 @@ function renderLimitCutNumberById(id, x, y, rad){
 		break;
 	}	
 	graphics.endFill();
+}
+
+function toggleHints() {
+	hintEnabled = !hintEnabled;
 }
