@@ -1397,6 +1397,10 @@ function reset() {
 	bossReversal = Math.floor(Math.random() * 2);
 	puddleReversal = Math.floor(Math.random() * 2);
 
+	initializePosMapping(bossReversal, puddleReversal);
+	initializeBossLocations(bossReversal);
+
+
 }
 
 function parseStratToId(query) {
