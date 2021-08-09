@@ -7,11 +7,11 @@ input {
 	border-style: solid;
 	border-width: thick;
 	color: white;
-	padding: 15px 50px;
+	padding: 10px 40px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 20px;
+	font-size: 15px;
 	margin-left: 20px;
 	margin-top: 0%;
 }
@@ -21,11 +21,11 @@ select {
 	border-style: solid;
 	border-width: thick;
 	color: white;
-	padding: 15px 20px;
+	padding: 10px 20px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 20px;
+	font-size: 15px;
 	margin-left: 20px;
 	margin-top: 0%;
 }
@@ -35,22 +35,22 @@ label {
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 25px;
+	font-size: 20px;
 	margin-left: 20px;
 	margin-top: 0%;
 	font-weight: bold;
 }
 
 p {
-	font-size: 20px;
+	font-size: 17px;
 }
 
 #strats {
 	margin-top: 10px;
-	margin-left: 55px;
+	margin-left: 49px;
 }
 
 
 h2 {
-	margin-left: 200px;
+	margin-left: 70px;
 }

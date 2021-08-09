@@ -52,7 +52,7 @@ var rad = 7;
 
 var playerYOffset = rad * 6;
 
-var speed = 5;
+var speed = 1;
 
 var playerId = 1;
 
@@ -70,6 +70,7 @@ var puddleHitboxWest;
 var puddleHitboxEast;
 var puddleSize;
 
+var message = "";
 
 var chakramSize;
 
@@ -86,7 +87,6 @@ var chakramAOE1;
 var chakramAOE2;
 
 var state = 0;
-
 
 var swBait = [178, 521];
 var seBait = [521, 521];
@@ -178,7 +178,14 @@ function setup() {
   playerId = Math.floor(Math.random() * 8) + 1;
   bossReversal = Math.floor(Math.random() * 2);
   puddleReversal = Math.floor(Math.random() * 2);
-  
+
+  const query = window.location.search;
+  const urlParams = new URLSearchParams(query);
+  const stratQuery = urlParams.get('strat');
+
+  this.setStrat(parseStratToId(stratQuery));
+  this.setSelectorTo(parseStratToId(stratQuery));
+
   initializePosMapping(bossReversal, puddleReversal);
   
   initializeKeyBindings();
@@ -190,6 +197,21 @@ function setup() {
   app.stage.addChild(bj);
   app.stage.addChild(alex);
   app.stage.addChild(graphics);
+}
+
+function parseStratToId(query) {
+	switch (query) {
+		case 'onyxia':
+			return 1;
+		case 'tps':
+			return 0;
+		default:
+			return 0;
+    }
+}
+
+function setSelectorTo(id) {
+	document.getElementById("strats").selectedIndex = id;
 }
 
 function setPlayerId(id) {
@@ -474,7 +496,7 @@ function tick(delta) {
 			
 		// fail state
 		case -1:
-			alert("You failed.");
+			alert(message);
 			state = -2;
 			break;
 			
@@ -915,9 +937,11 @@ function setPlayerIdFurthestFromBrute(state){
 	
 }
 
-function isHit(shapes, excludedPlayers){
+function isHit(shapes, descriptor, excludedPlayers){
 	
 	var hit = false;
+
+	var playersHit = [];
 	
 	for(var i = 1; i <= 8; i++){
 		if(excludedPlayers.includes(i)){
@@ -938,14 +962,14 @@ function isHit(shapes, excludedPlayers){
 		
 		for(const shape of shapes){
 			if(shape.contains(x, y)){
-				console.log(i + " got hit by " + shape);
+				playersHit.push([i, descriptor]);
 			}
 			
 			hit = hit || shape.contains(x, y);
 			
 		}
 	}
-	return hit;
+	return [hit, playersHit];
 }
 
 function renderSacrament(){
@@ -1078,8 +1102,8 @@ function renderBruteRay(){
 	
 	var projectedPos = [center[0] + 380 * Math.cos(alpha), center[1] + 380 * -Math.sin(alpha)];
 	
-	var projectedPosP1 = [projectedPos[0] + 140 * Math.cos(Math.PI / 2 - alpha), projectedPos[1] + 140 * Math.sin(Math.PI/2 - alpha)];
-	var projectedPosP2 = [projectedPos[0] + 140 * Math.cos(Math.PI / 2 + alpha), projectedPos[1] + 140 * -Math.sin(Math.PI/2 + alpha)];
+	var projectedPosP1 = [projectedPos[0] + 100 * Math.cos(Math.PI / 2 - alpha), projectedPos[1] + 100 * Math.sin(Math.PI/2 - alpha)];
+	var projectedPosP2 = [projectedPos[0] + 100 * Math.cos(Math.PI / 2 + alpha), projectedPos[1] + 100 * -Math.sin(Math.PI/2 + alpha)];
 	
 	var polygon = new PIXI.Polygon([center[0], center[1], projectedPosP1[0], projectedPosP1[1], projectedPosP2[0],projectedPosP2[1], center[0], center[1]]);
 	
@@ -1157,9 +1181,27 @@ function advanceState(){
 }
 
 function goIntoFailStateIf(expr) {
-	if (expr) {
+	if (expr[0]) {
 		isRealtime = false;
 		state = - 1;
+
+		var message_c = "";
+
+		for (const pair of expr[1]) {
+			if (pair[0] == null) {
+				message_c += pair[1];
+				continue;
+            }
+
+			var extra = "";
+
+			if (pair[0] == playerId) {
+				extra = " (YOU)";
+            }
+			message_c += pair[0] + extra +  " " + pair[1];
+			message_c += "\n"
+		}
+		message = message_c;
 		return true;
 	}
 	return false;
@@ -1238,7 +1280,7 @@ function simulate(delta) {
 			shapes2 = renderLineAOE([wChakramX, wChakramY], chakramSnapshot[1], 0, 30, true);
 		}
 
-		if (goIntoFailStateIf(isHit(shapes1, []) || isHit(shapes2, []))) {
+		if (goIntoFailStateIf(isHit(shapes1, "got hit by N chakram.", []) || isHit(shapes2, "got hit by E/W chakram.", []))) {
 			return;
         }
 
@@ -1266,7 +1308,7 @@ function simulate(delta) {
 	if (passedTime >= 14850 && passedTime < 14850 + 500) {
 		var shapes = renderCruiseCleave(1);
 
-		if (goIntoFailStateIf(isHit(shapes, [1]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #1 cleave.", [1]))) {
 			return;
         }
 	}
@@ -1274,7 +1316,7 @@ function simulate(delta) {
 	if (passedTime >= 16366 && passedTime < 16366 + 500) {
 		var shapes = renderCruiseCharge(1, 2);
 
-		if (goIntoFailStateIf(isHit(shapes, [1, 2]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #2 charge.", [1, 2]))) {
 			return;
         }
 	}
@@ -1286,7 +1328,7 @@ function simulate(delta) {
 	if (passedTime >= 18666 && passedTime <= 23926) {
 		var shapes = renderBruteRay();
 
-		if (goIntoFailStateIf(isHit(shapes, []))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Brute's ray.", []))) {
 			return;
         }
 	}
@@ -1294,7 +1336,7 @@ function simulate(delta) {
 	if (passedTime >= 19533 && passedTime < 19533 + 500) {
 		var shapes = renderCruiseCleave(3);
 
-		if (goIntoFailStateIf(isHit(shapes, [3]))){
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #3 cleave.", [3]))){
 			return;
         }
 	}
@@ -1302,12 +1344,18 @@ function simulate(delta) {
 	if (passedTime >= 19900 && timesPuddlesShrank == 0) {
 		// first puddle soak. must be soaked by 5/6
 
-		var westSoaked = isHit([puddleHitboxWest], [1, 2, 3, 4, 7, 8]);
-		var eastSoaked = isHit([puddleHitboxEast], [1, 2, 3, 4, 7, 8]);
+		var westSoaked = isHit([puddleHitboxWest], "",  [1, 2, 3, 4, 7, 8]);
+		var eastSoaked = isHit([puddleHitboxEast], "", [1, 2, 3, 4, 7, 8]);
 
-		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+		if (!westSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "West puddle #1 didn't get soaked."]]]);
 			return;
-        }
+		}
+
+		if (!eastSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "East puddle #1 didn't get soaked."]]]);
+			return;
+		}
 
 		puddleSize /= 2;
 		timesPuddlesShrank++;
@@ -1316,7 +1364,7 @@ function simulate(delta) {
 	if (passedTime >= 21033 && passedTime < 21033 + 500) {
 		var shapes = renderCruiseCharge(3, 4);
 
-		if (goIntoFailStateIf(isHit(shapes, [3, 4]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #4 charge.", [3, 4]))) {
 			return;
         }
 	}
@@ -1328,7 +1376,7 @@ function simulate(delta) {
 	if (passedTime >= 21926 && passedTime < 21926 + 1000) {
 		var shapes = renderSacrament();
 
-		if (goIntoFailStateIf(isHit(shapes, []))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Alex's sacrament.", []))) {
 			return;
         }
 	}
@@ -1336,16 +1384,22 @@ function simulate(delta) {
 	if (passedTime >= 23800 && passedTime < 23800 + 500) {
 		var shapes = renderCruiseCleave(5);
 
-		if (goIntoFailStateIf(isHit(shapes, [5]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #5 cleave.", [5]))) {
 			return;
         }
 	}
 
 	if (passedTime >= 24066 && timesPuddlesShrank == 1) {
-		var westSoaked = isHit([puddleHitboxWest], [1, 2, 3, 4, 5, 6]);
-		var eastSoaked = isHit([puddleHitboxEast], [1, 2, 3, 4, 5, 6]);
+		var westSoaked = isHit([puddleHitboxWest], "", [1, 2, 3, 4, 5, 6]);
+		var eastSoaked = isHit([puddleHitboxEast], "", [1, 2, 3, 4, 5, 6]);
 
-		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+		if (!westSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "West puddle #2 didn't get soaked."]]]);
+			return;
+		}
+
+		if (!eastSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "East puddle #2 didn't get soaked."]]]);
 			return;
 		}
 
@@ -1356,7 +1410,7 @@ function simulate(delta) {
 	if (passedTime >= 25200 && passedTime < 25200 + 500) {
 		var shapes = renderCruiseCharge(5, 6);
 
-		if (goIntoFailStateIf(isHit(shapes, [5, 6]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #6 charge.", [5, 6]))) {
 			return;
         }
 	}
@@ -1368,16 +1422,22 @@ function simulate(delta) {
 	if (passedTime >= 28000 && passedTime < 28000 + 500) {
 		var shapes = renderCruiseCleave(7);
 
-		if (goIntoFailStateIf(isHit(shapes, [7]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #7 cleave.", [7]))) {
 			return;
         }
 	}
 
 	if (passedTime >= 28366 && timesPuddlesShrank == 2) {
-		var westSoaked = isHit([puddleHitboxWest], [3, 4, 5, 6, 7, 8]);
-		var eastSoaked = isHit([puddleHitboxEast], [3, 4, 5, 6, 7, 8]);
+		var westSoaked = isHit([puddleHitboxWest], "", [3, 4, 5, 6, 7, 8]);
+		var eastSoaked = isHit([puddleHitboxEast], "", [3, 4, 5, 6, 7, 8]);
 
-		if (goIntoFailStateIf(!(westSoaked && eastSoaked))) {
+		if (!westSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "West puddle #3 didn't get soaked."]]]);
+			return;
+		}
+
+		if (!eastSoaked[0]) {
+			goIntoFailStateIf([true, [[null, "East puddle #3 didn't get soaked."]]]);
 			return;
 		}
 		timesPuddlesShrank++;
@@ -1386,7 +1446,7 @@ function simulate(delta) {
 	if (passedTime >= 29566 && passedTime < 29566 + 500) {
 		var shapes = renderCruiseCharge(7, 8);
 
-		if (goIntoFailStateIf(isHit(shapes, [7, 8]))) {
+		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #8 charge.", [7, 8]))) {
 			return;
         }
 	}
