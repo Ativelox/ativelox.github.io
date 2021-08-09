@@ -1137,6 +1137,8 @@ var onyxiaStratReversedHints = [
 
 var currentBossCasts = new Map();
 
+var currentPlayerIdIndex = 0;
+
 var castBarWidth = 300;
 var castBarHeight = 30;
 
@@ -1385,7 +1387,13 @@ function reset() {
 	bj.visible = false;
 	alex.visible = false;
 
-	playerId = Math.floor(Math.random() * 8) + 1;
+	if (currentPlayerIdIndex > 0) {
+		playerId = currentPlayerIdIndex;
+
+	} else {
+		playerId = Math.floor(Math.random() * 8) + 1;
+
+	}
 	bossReversal = Math.floor(Math.random() * 2);
 	puddleReversal = Math.floor(Math.random() * 2);
 
@@ -1407,6 +1415,8 @@ function setSelectorTo(id) {
 }
 
 function setPlayerId(id) {
+	currentPlayerIdIndex = id;
+
 	if (id < 0 || isRealtime || state > 0) {
 		return;
     }
