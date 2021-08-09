@@ -574,8 +574,8 @@ function initializePosMapping(bossReversed, puddleReversed){
 		stateToIdToPos[12][4] = ePos;
 		stateToIdToPos[12][5] = wPos;
 		stateToIdToPos[12][6] = ePos;
-		stateToIdToPos[12][7] = nwPos;
-		stateToIdToPos[12][8] = nePos;
+		stateToIdToPos[12][7] = swPos;
+		stateToIdToPos[12][8] = sePos;
 
 		if (puddleReversal) {
 			stateToIdToPos[12][1] = wHighPuddle3Pos;
