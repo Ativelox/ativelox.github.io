@@ -1,5 +1,5 @@
-var width = 1000;
-var height = 1000;
+var width = 700;
+var height = 700;
 
 let app = new PIXI.Application({width: width, height: height});
 app.renderer.backgroundColor = 0xFFFFFF;
@@ -46,11 +46,11 @@ var bruteVy = 0;
 var cruiseVx = 0;
 var cruiseVy = 0;
 
-var hitboxSize = 30;
+var hitboxSize = 21;
 
-var rad = 10;
+var rad = 7;
 
-var playerYOffset = rad * 8;
+var playerYOffset = rad * 6;
 
 var speed = 5;
 
@@ -88,38 +88,38 @@ var chakramAOE2;
 var state = 0;
 
 
-var swBait = [255, 745];
-var seBait = [745, 745];
+var swBait = [178, 521];
+var seBait = [521, 521];
 
-var swPos = [240, 760];
-var sePos = [760, 760];
-var nwPos = [240, 240];
-var nePos = [760, 240];
+var swPos = [168, 532];
+var sePos = [532, 532];
+var nwPos = [168, 168];
+var nePos = [532, 168];
 
-var wwnPos = [155, 355];
-var eenPos = [845, 355];
+var wwnPos = [108, 248];
+var eenPos = [591, 248];
 
-var wwsPos = [155, 645];
-var eesPos = [845, 645];
+var wwsPos = [155, 451];
+var eesPos = [591, 451];
 
-var ePos = [870, 515];
-var wPos = [130, 515];
+var ePos = [609, 360];
+var wPos = [91, 360];
 
-var wSacramentPos = [230, 755];
-var eSacramentPos = [760, 755];
+var wSacramentPos = [161, 528];
+var eSacramentPos = [532, 528];
 
-var wPuddle1Pos = [190, 500];
-var ePuddle1Pos = [810, 500];
+var wPuddle1Pos = [133, 350];
+var ePuddle1Pos = [567, 350];
 
-var wHighPuddle2Pos = [240, 455];
-var wLowPuddle2Pos = [240, 545];
-var eHighPuddle2Pos = [760, 455];
-var eLowPuddle2Pos = [760, 545];
+var wHighPuddle2Pos = [168, 318];
+var wLowPuddle2Pos = [168, 381];
+var eHighPuddle2Pos = [532, 318];
+var eLowPuddle2Pos = [532, 381];
 
-var wHighPuddle3Pos = [260, 425];
-var wLowPuddle3Pos = [260, 575];
-var eHighPuddle3Pos = [740, 425];
-var eLowPuddle3Pos = [740, 575];
+var wHighPuddle3Pos = [182, 297];
+var wLowPuddle3Pos = [182, 402];
+var eHighPuddle3Pos = [518, 297];
+var eLowPuddle3Pos = [518, 402];
 
 var stateToIdToPos = {};
 
@@ -131,7 +131,7 @@ var timesPuddlesShrank = 0;
 
 var isRealtime = false;
 
-var chakramSnapshot = [[0, 0], [0, 0]];
+var chakramSnapshot = [[0, 0], [0, 0]];	
 var isChakramSnapshot = false;
 
 var isBruteJumpSnapshot = false;
@@ -840,7 +840,7 @@ function initializePosMapping(bossReversed, puddleReversed){
 }
 
 function render(shape){
-	graphics.lineStyle(5, 0xFFFFFF);
+	graphics.lineStyle(2, 0xFFFFFF);
 	graphics.beginFill(0xfc9803);
 	graphics.drawShape(shape);
 	
@@ -949,10 +949,10 @@ function isHit(shapes, excludedPlayers){
 }
 
 function renderSacrament(){
-	var rect1 = new PIXI.Rectangle(width/2 - 100, 0, 200, height - 200);
-	var rect2 = new PIXI.Rectangle(0, height-240, width, 200);
+	var rect1 = new PIXI.Rectangle(width/2 - 70, 0, 140, height - 140);
+	var rect2 = new PIXI.Rectangle(0, height-168, width, 140);
 	
-	graphics.lineStyle(5, 0x097e4f7);
+	graphics.lineStyle(2, 0x097e4f7);
 	graphics.beginFill(0xafebfa);
 	graphics.drawShape(rect1);
 	graphics.drawShape(rect2);
@@ -972,7 +972,7 @@ function renderCruiseCleave(id){
 		y = stateToIdToPos[state][id][1];
 	}
 	
-	return renderCleave(width/2, height/2, x, y, 400, 700);
+	return renderCleave(width/2, height/2, x, y, 280, 490);
 	
 }
 
@@ -1004,7 +1004,7 @@ function renderLineAOE(from, to, length, width_c, passing) {
 		projectedSrcPos2[0], projectedSrcPos2[1],
 		projectedSrcPos1[0], projectedSrcPos1[1]]);
 
-	graphics.lineStyle(5, 0xcc6600);
+	graphics.lineStyle(2, 0xcc6600);
 	graphics.beginFill(0xff8c1a);
 	graphics.drawShape(polygon);
 
@@ -1043,7 +1043,7 @@ function renderCruiseCharge(src_id, dest_id){
 		dest_y = stateToIdToPos[state][dest_id][1];
 	}
 	
-	var width_c = 100;
+	var width_c = 70;
 	
 	var center = [width/2, height/2];
 	
@@ -1062,7 +1062,7 @@ function renderCruiseCharge(src_id, dest_id){
 						projectedSrcPos2[0], projectedSrcPos2[1],
 						projectedSrcPos1[0], projectedSrcPos1[1]]);
 	
-	graphics.lineStyle(5, 0xcc6600);
+	graphics.lineStyle(2, 0xcc6600);
 	graphics.beginFill(0xff8c1a);
 	graphics.drawShape(polygon);
 						
@@ -1076,14 +1076,14 @@ function renderBruteRay(){
 	
 	var alpha = Math.atan2(height - bruteBaitPlayerPos[1] - width/2, bruteBaitPlayerPos[0] - height/2);
 	
-	var projectedPos = [center[0] + 600 * Math.cos(alpha), center[1] + 600 * -Math.sin(alpha)];
+	var projectedPos = [center[0] + 380 * Math.cos(alpha), center[1] + 380 * -Math.sin(alpha)];
 	
-	var projectedPosP1 = [projectedPos[0] + 150 * Math.cos(Math.PI / 2 - alpha), projectedPos[1] + 150 * Math.sin(Math.PI/2 - alpha)];
-	var projectedPosP2 = [projectedPos[0] + 150 * Math.cos(Math.PI / 2 + alpha), projectedPos[1] + 150 * -Math.sin(Math.PI/2 + alpha)];
+	var projectedPosP1 = [projectedPos[0] + 140 * Math.cos(Math.PI / 2 - alpha), projectedPos[1] + 140 * Math.sin(Math.PI/2 - alpha)];
+	var projectedPosP2 = [projectedPos[0] + 140 * Math.cos(Math.PI / 2 + alpha), projectedPos[1] + 140 * -Math.sin(Math.PI/2 + alpha)];
 	
 	var polygon = new PIXI.Polygon([center[0], center[1], projectedPosP1[0], projectedPosP1[1], projectedPosP2[0],projectedPosP2[1], center[0], center[1]]);
 	
-	graphics.lineStyle(5, 0xcc6600);
+	graphics.lineStyle(2, 0xcc6600);
 	graphics.beginFill(0xff8c1a);
 	graphics.drawShape(polygon);
 	graphics.endFill();
@@ -1103,7 +1103,7 @@ function renderCleave(center_x, center_y, x, y, height_c, width_c){
 	
 	var polygon = new PIXI.Polygon([x, y, projectedPosP1[0], projectedPosP1[1], projectedPosP2[0],projectedPosP2[1], x, y]);
 	
-	graphics.lineStyle(5, 0xcc6600);
+	graphics.lineStyle(2, 0xcc6600);
 	graphics.beginFill(0xff8c1a);
 	graphics.drawShape(polygon);
 	graphics.endFill();
@@ -1405,7 +1405,7 @@ function renderChakramAOE(){
 	chakramAOE2 = new PIXI.Rectangle(0, eChakramY - chakramSize / 2, width, chakramSize);
 
 	
-	graphics.lineStyle(5, 0xcc6600);
+	graphics.lineStyle(2, 0xcc6600);
 	graphics.beginFill(0xff8c1a);
 	graphics.drawShape(chakramAOE1);
 	graphics.drawShape(chakramAOE2);
@@ -1437,7 +1437,7 @@ function renderChakrams(isReversed){
 		chakram2 = new PIXI.Circle(wChakramX, wChakramY, chakramSize / 2);
 	}
 	
-	graphics.lineStyle(5, 0x996600);
+	graphics.lineStyle(2, 0x996600);
 	graphics.beginFill(0xcc8800);
 	graphics.drawShape(chakram1);
 	graphics.drawShape(chakram2);
@@ -1454,7 +1454,7 @@ function renderPuddles(isReversed){
 		puddleHitboxEast = new PIXI.Circle(nePuddleX, nePuddleY, puddleSize / 2);
 	}
 			
-	graphics.lineStyle(10, 0x400080);
+	graphics.lineStyle(4, 0x400080);
 	graphics.beginFill(0x6600cc);
 	graphics.drawShape(puddleHitboxWest);
 	graphics.drawShape(puddleHitboxEast)
@@ -1605,7 +1605,7 @@ function renderNPCs(includeNumber){
 
 		var npcHitbox = new PIXI.Circle(stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], hitboxSize / 2);
 
-		graphics.lineStyle(5, 0xFFFFFF);
+		graphics.lineStyle(2, 0xFFFFFF);
 		graphics.beginFill(0xfc9803);
 		graphics.drawShape(npcHitbox);
 
@@ -1625,7 +1625,7 @@ function renderPlayer(id, x, y, rad, includeNumber){
 			
 	hitbox = new PIXI.Rectangle(x - hitboxSize / 2, y - hitboxSize / 2, hitboxSize, hitboxSize)
 			
-	graphics.lineStyle(5, 0xFFFFFF);
+	graphics.lineStyle(2, 0xFFFFFF);
 	graphics.beginFill(0xfc9803);
 	graphics.drawShape(hitbox);
 	
@@ -1651,7 +1651,7 @@ function renderLimitCutNumberById(id, x, y, rad){
 	}
 	
 	
-	graphics.lineStyle(5, color);
+	graphics.lineStyle(2, color);
 	
 	graphics.beginFill(color);
 	
