@@ -1135,6 +1135,8 @@ var onyxiaStratReversedHints = [
 	}
 ];
 
+var knockbackPrevTime = {};
+
 var currentBossCasts = new Map();
 
 var currentPlayerIdIndex = 0;
@@ -1290,22 +1292,30 @@ var stratId = 0;
 var bossCastData;
 	
 PIXI.loader
-  .add("img/bg.png")
-  .add("img/cc.png")
-  .add("img/bj.png")
-  .add("img/alex.png")
-  .load(setup);
+	.add("img/bg.png")
+	.add("img/cc.png")
+	.add("img/bj.png")
+	.add("img/alex.png")
+	.add("img/knockback_prev.png")
+	.load(setup);
 
 function setup() {	
   background = new PIXI.Sprite(PIXI.loader.resources["img/bg.png"].texture);
   cc = new PIXI.Sprite(PIXI.loader.resources["img/cc.png"].texture);
   bj = new PIXI.Sprite(PIXI.loader.resources["img/bj.png"].texture);
   alex = new PIXI.Sprite(PIXI.loader.resources["img/alex.png"].texture);
+  knockback_prev = new PIXI.Sprite(PIXI.loader.resources["img/knockback_prev.png"].texture);
   
   background.width = width * 0.8;
   background.height = height * 0.8;
   background.x = (width - background.width)/2;
-  background.y = (height - background.height)/2;
+	background.y = (height - background.height) / 2;
+
+	knockback_prev.width = 50;
+	knockback_prev.height = 50;
+	knockback_prev.x = width + 50;
+	knockback_prev.y = height / 2 - 100;
+	knockback_prev.visible = false;
   
   puddleSize = background.width / 2.6;
   chakramSize = background.width / 10;
@@ -1345,7 +1355,8 @@ function setup() {
   app.stage.addChild(background);
   app.stage.addChild(cc);
   app.stage.addChild(bj);
-  app.stage.addChild(alex);
+	app.stage.addChild(alex);
+	app.stage.addChild(knockback_prev);
   app.stage.addChild(graphics);
 }
 
@@ -1383,9 +1394,12 @@ function reset() {
 	puddleSize = background.width / 2.6;
 	chakramSize = background.width / 10;
 
+	knockbackPrevTime = {};
+
 	cc.visible = false;
 	bj.visible = false;
 	alex.visible = false;
+	knockback_prev.visible = false;
 
 	if (currentPlayerIdIndex > 0) {
 		playerId = currentPlayerIdIndex;
@@ -1748,6 +1762,7 @@ function initializePosMapping(bossReversed, puddleReversed){
 
 	for (var i = 1; i <= 8; i++) {
 		stateToIdToPos[0][i] = [width / 2, height / 2];
+		knockbackPrevTime[i] = 0;
 	}
 
 	// Onyxia strat
@@ -2433,6 +2448,8 @@ function simulate(delta) {
 	playerX += playerVx;
 	playerY += playerVy;
 
+	renderKnockbackPrevention();
+
 	if (stratId == 0) {
 		renderHint(tpsStratHints[playerId - 1]);
 	} else if (stratId == 1 && !bossReversal) {
@@ -2456,6 +2473,7 @@ function simulate(delta) {
 		bj.visible = true;
 		cc.visible = true;
 		alex.visible = true;
+		knockback_prev.visible = true;
 
 		initializeBossLocations(bossReversal);
 
@@ -2497,6 +2515,8 @@ function simulate(delta) {
 
 	// render chakram AOE for .5 seconds
 	if (passedTime >= 13216 && passedTime < 13216 + 500) {
+		knockbackPrevPressed(1, false);
+		knockbackPrevPressed(2, false);
 
 		cc.visible = false;
 
@@ -2529,6 +2549,9 @@ function simulate(delta) {
 	}
 
 	if (passedTime >= 15866) {
+		knockbackPrevPressed(3, false);
+		knockbackPrevPressed(4, false);
+
 		if (!isBruteRaySnapshot) {
 			setPlayerIdFurthestFromBrute(state);
 			isBruteRaySnapshot = true;
@@ -2537,6 +2560,8 @@ function simulate(delta) {
 
 	if (passedTime >= 14850 && passedTime < 14850 + 500) {
 		var shapes = renderCruiseCleave(1);
+
+		goIntoFailStateIf([checkKnockbackPrevUpWhenHit(1), [[1, "didn't have knockback prevention up."]]]);
 
 		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #1 cleave.", [1]))) {
 			return;
@@ -2566,6 +2591,8 @@ function simulate(delta) {
 	if (passedTime >= 19533 && passedTime < 19533 + 500) {
 		var shapes = renderCruiseCleave(3);
 
+		goIntoFailStateIf([checkKnockbackPrevUpWhenHit(3), [[3, "didn't have knockback prevention up."]]]);
+
 		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #3 cleave.", [3]))){
 			return;
         }
@@ -2573,6 +2600,8 @@ function simulate(delta) {
 
 	if (passedTime >= 19900 && timesPuddlesShrank == 0) {
 		// first puddle soak. must be soaked by 5/6
+		knockbackPrevPressed(5, false);
+		knockbackPrevPressed(6, false);
 
 		var westSoaked = isHit([puddleHitboxWest], "",  [1, 2, 3, 4, 7, 8]);
 		var eastSoaked = isHit([puddleHitboxEast], "", [1, 2, 3, 4, 7, 8]);
@@ -2614,12 +2643,17 @@ function simulate(delta) {
 	if (passedTime >= 23800 && passedTime < 23800 + 500) {
 		var shapes = renderCruiseCleave(5);
 
+		goIntoFailStateIf([checkKnockbackPrevUpWhenHit(5), [[5, "didn't have knockback prevention up."]]]);
+
 		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #5 cleave.", [5]))) {
 			return;
         }
 	}
 
 	if (passedTime >= 24066 && timesPuddlesShrank == 1) {
+		knockbackPrevPressed(7, false);
+		knockbackPrevPressed(8, false);
+
 		var westSoaked = isHit([puddleHitboxWest], "", [1, 2, 3, 4, 5, 6]);
 		var eastSoaked = isHit([puddleHitboxEast], "", [1, 2, 3, 4, 5, 6]);
 
@@ -2651,6 +2685,8 @@ function simulate(delta) {
 
 	if (passedTime >= 28000 && passedTime < 28000 + 500) {
 		var shapes = renderCruiseCleave(7);
+
+		goIntoFailStateIf([checkKnockbackPrevUpWhenHit(7), [[7, "didn't have knockback prevention up."]]]);
 
 		if (goIntoFailStateIf(isHit(shapes, "got hit by Cruise's #7 cleave.", [7]))) {
 			return;
@@ -2860,7 +2896,12 @@ function initializeKeyBindings(){
 	let left = keyboard("a"),
 		up = keyboard("w"),
 		right = keyboard("d"),
-		down = keyboard("s");
+		down = keyboard("s"),
+		action = keyboard("1");
+
+	  action.press = () => {
+		    knockbackPrevPressed(playerId, true);
+      }
 
 	  left.press = () => {
 			playerVx = -speed;
@@ -2877,7 +2918,7 @@ function initializeKeyBindings(){
 	  up.release = () => {
 			playerVy = 0;
 		
-	  };
+		};
 
 	  right.press = () => {
 			playerVx = speed;
@@ -3096,5 +3137,57 @@ function moveNPCs(destState) {
 		var newPos = move(stateToIdToPos[0][i][0], stateToIdToPos[0][i][1], stateToIdToPos[destState][i][0], stateToIdToPos[destState][i][1], 1);
 		stateToIdToPos[0][i] = newPos;
     }
+
+}
+
+function knockbackPrevPressed(id, isPlayer) {
+	if (id == playerId && !isPlayer) {
+		return;
+    }
+
+	if (knockbackPrevTime[id] != 0) {
+		return;
+	}
+
+	knockbackPrevTime[id] = passedTime;
+}
+
+function checkKnockbackPrevUpWhenHit(id) {
+	if (passedTime - knockbackPrevTime[id] > 6000) {
+		return true;
+	}
+	return false;
+}
+
+function renderKnockbackPrevention() {
+	if (knockbackPrevTime[playerId] == 0) {
+		return;
+    }
+
+	var remainingTime = 6000 - (passedTime - knockbackPrevTime[playerId]);
+
+	if (remainingTime <= 0) {
+		var crossOut = new PIXI.Polygon([
+			knockback_prev.x, knockback_prev.y + 10,
+			knockback_prev.x + 10, knockback_prev.y,
+			knockback_prev.x + knockback_prev.width, knockback_prev.y + knockback_prev.height - 10,
+			knockback_prev.x + knockback_prev.width - 10, knockback_prev.y + knockback_prev.height,
+			knockback_prev.x, knockback_prev.y + 10
+		]);
+
+		graphics.lineStyle(2, 0x00000);
+		graphics.beginFill(0xb5160b);
+		graphics.drawShape(crossOut);
+		graphics.endFill();
+
+		return;
+    }
+
+	var text = new PIXI.Text(new Intl.NumberFormat('en-IN', { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(remainingTime / 1000) + "s", { fontSize: 20, fill: 0x00000 });
+	text.x = knockback_prev.x;
+	text.y = knockback_prev.y - 20;
+
+	app.stage.addChild(text);
+	removeChildNextCycle(text);
 
 }
