@@ -2201,8 +2201,8 @@ function renderCruiseCleave(id){
 		x = playerX;
 		y = playerY;
 	}else{
-		x = stateToIdToPos[state][id][0];
-		y = stateToIdToPos[state][id][1];
+		x = stateToIdToPos[0][id][0];
+		y = stateToIdToPos[0][id][1];
 	}
 	
 	return renderCleave(width/2, height/2, x, y, 280, 490);
