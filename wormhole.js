@@ -2164,8 +2164,8 @@ function isHit(shapes, descriptor, excludedPlayers){
 			y = playerY;
 			
 		}else{
-			x = stateToIdToPos[state][i][0];
-			y = stateToIdToPos[state][i][1];
+			x = stateToIdToPos[0][i][0];
+			y = stateToIdToPos[0][i][1];
 			
 		}
 		
@@ -2258,22 +2258,22 @@ function renderCruiseCharge(src_id, dest_id){
 		src_x = playerX;
 		src_y = playerY;
 		
-		dest_x = stateToIdToPos[state][dest_id][0];
-		dest_y = stateToIdToPos[state][dest_id][1];
+		dest_x = stateToIdToPos[0][dest_id][0];
+		dest_y = stateToIdToPos[0][dest_id][1];
 		
 	}else if(dest_id == playerId){
 		dest_x = playerX;
 		dest_y = playerY;
 		
-		src_x = stateToIdToPos[state][src_id][0];
-		src_y = stateToIdToPos[state][src_id][1];
+		src_x = stateToIdToPos[0][src_id][0];
+		src_y = stateToIdToPos[0][src_id][1];
 		
 	}else{
-		src_x = stateToIdToPos[state][src_id][0];
-		src_y = stateToIdToPos[state][src_id][1];
+		src_x = stateToIdToPos[0][src_id][0];
+		src_y = stateToIdToPos[0][src_id][1];
 		
-		dest_x = stateToIdToPos[state][dest_id][0];
-		dest_y = stateToIdToPos[state][dest_id][1];
+		dest_x = stateToIdToPos[0][dest_id][0];
+		dest_y = stateToIdToPos[0][dest_id][1];
 	}
 	
 	var width_c = 70;
@@ -2466,6 +2466,7 @@ function simulate(delta) {
 	// render chakrams 
 	if (passedTime >= 5800 && passedTime < 13216) {
 		renderChakrams(bossReversal);
+		moveNPCs(1);
 
 		// snapshot chakrams to 2 random players respectively.
 		if (!isChakramSnapshot) {
@@ -2515,8 +2516,8 @@ function simulate(delta) {
 
 	}
 
-	if (passedTime >= 13216 + 500 && passedTime < 14350) {
-		state = 3;
+	if (passedTime >= 13216 + 500 && passedTime < 16366 + 500) {
+		moveNPCs(3);
     }
 
 	if (passedTime >= 14350 && passedTime <= 15866) {
@@ -2550,9 +2551,9 @@ function simulate(delta) {
         }
 	}
 
-	if (passedTime > 16366 + 500 && passedTime < 18666) {
-		state = 6;
-    }
+	if (passedTime > 16366 + 500 && passedTime < 21033 + 500) {
+		moveNPCs(6);
+	}
 
 	if (passedTime >= 18666 && passedTime <= 23926) {
 		var shapes = renderBruteRay();
@@ -2598,8 +2599,8 @@ function simulate(delta) {
         }
 	}
 
-	if (passedTime >= 21033 + 500 && passedTime < 21926) {
-		state = 9;
+	if (passedTime >= 21033 + 500 && passedTime < 25200 + 500) {
+		moveNPCs(9);
 	}
 
 	if (passedTime >= 21926 && passedTime < 21926 + 1000) {
@@ -2644,8 +2645,8 @@ function simulate(delta) {
         }
 	}
 
-	if (passedTime >= 25200 + 500 && passedTime < 28000) {
-		state = 12;
+	if (passedTime >= 25200 + 500 && passedTime < 29566 + 500) {
+		moveNPCs(12);
 	}
 
 	if (passedTime >= 28000 && passedTime < 28000 + 500) {
@@ -2974,7 +2975,7 @@ function renderNPCs(includeNumber){
 			continue;
 		}
 
-		var npcHitbox = new PIXI.Circle(stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], hitboxSize / 2);
+		var npcHitbox = new PIXI.Circle(stateToIdToPos[0][i][0], stateToIdToPos[0][i][1], hitboxSize / 2);
 
 		graphics.lineStyle(2, 0xFFFFFF);
 		graphics.beginFill(0xfc9803);
@@ -2983,7 +2984,7 @@ function renderNPCs(includeNumber){
 		graphics.endFill();
 
 		if (includeNumber) { 
-			renderLimitCutNumberById(i, stateToIdToPos[state][i][0], stateToIdToPos[state][i][1], rad);
+			renderLimitCutNumberById(i, stateToIdToPos[0][i][0], stateToIdToPos[0][i][1], rad);
 		}
 		
 	}
@@ -3085,4 +3086,15 @@ function renderLimitCutNumberById(id, x, y, rad){
 
 function toggleHints() {
 	hintEnabled = !hintEnabled;
+}
+
+function moveNPCs(destState) {
+	for (var i = 1; i <= 8; i++) {
+		if (i == playerId) {
+			continue;
+		}
+		var newPos = move(stateToIdToPos[0][i][0], stateToIdToPos[0][i][1], stateToIdToPos[destState][i][0], stateToIdToPos[destState][i][1], 1);
+		stateToIdToPos[0][i] = newPos;
+    }
+
 }
